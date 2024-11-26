@@ -11,9 +11,15 @@ data:
     
     events {
       worker_connections 768;
+      # multi_accept on;
     }
     
     http {
+    
+      ##
+      # Basic Settings
+      ##
+    
       sendfile on;
       tcp_nopush on;
       tcp_nodelay on;
@@ -22,14 +28,26 @@ data:
       large_client_header_buffers 6 32k;
       client_max_body_size 100m;
     
+      # server_names_hash_bucket_size 64;
+      # server_name_in_redirect off;
       include /etc/nginx/mime.types;
       default_type application/octet-stream;
     
+      ##
+      # Logging Settings
+      ##
       access_log /var/log/nginx/access.log;
-      error_log /var/log/nginx/error.log debug;
+      error_log /var/log/nginx/error.log debug; # change from debug to warn or error for production
     
+      ##
+      # Gzip Settings
+      ##
       gzip on;
       gzip_disable "msie6";
+    
+      ##
+      # Virtual Host Configs
+      ##
     
       include /etc/nginx/conf.d/*.conf;
       include /etc/nginx/sites-enabled/*;
@@ -39,6 +57,11 @@ data:
         server_name  localhost;
     
         proxy_http_version 1.1;
+    
+        #charset koi8-r;
+        #access_log  /var/log/nginx/host.access.log  main;
+        #error_log /dev/stdout debug;
+        #rewrite_log on;
     
         location / {
             root   /usr/share/nginx/html;
@@ -52,6 +75,10 @@ data:
             try_files $uri /images/placeholder.png;
         }
     
+        #error_page  404              /404.html;
+    
+        # redirect server error pages to the static page /50x.html
+        #
         error_page   500 502 503 504  /50x.html;
         location = /50x.html {
             root   /usr/share/nginx/html;
@@ -60,14 +87,17 @@ data:
         location /api/ {
             proxy_pass http://backend:8080/;
         }
-      }
+    
+        }
+    
     }
 ---
-apiVersion: apps/v1
 kind: Deployment
+apiVersion: apps/v1
 metadata:
   name: frontend
   namespace: expense
+  # these labels are deployment related labels
   labels:
     component: frontend
     project: expense
@@ -79,6 +109,7 @@ spec:
       component: frontend
       project: expense
       tier: web
+  # pod definition
   template:
     metadata:
       labels:
@@ -88,10 +119,10 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: chandrahari296/frontend:v1.0
+          image: joindevops/frontend:v1.0
           volumeMounts:
             - name: nginx-conf
-              mountPath: /etc/nginx/conf.d/nginx.conf
+              mountPath: /etc/nginx/nginx.conf
               subPath: nginx.conf
               readOnly: true
       volumes:
@@ -101,6 +132,7 @@ spec:
             items:
               - key: nginx.conf
                 path: nginx.conf
+
 ---
 apiVersion: v1
 kind: Service
@@ -108,11 +140,12 @@ metadata:
   name: frontend
   namespace: expense
 spec:
+  type: LoadBalancer
   selector:
     component: frontend
     project: expense
     tier: web
   ports:
     - protocol: TCP
-      port: 8080
-      targetPort: 8080
+      port: 80 #service-port
+      targetPort: 8080 #target-port

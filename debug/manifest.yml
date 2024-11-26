@@ -1,0 +1,11 @@
+apiVersion: v1
+metadata:
+  name: debug
+  namespace: expense
+  labels:
+    name: expense
+kind: Pod
+spec:
+  containers:
+  - name: debug
+    image: chandrahari296/debug:v1.0

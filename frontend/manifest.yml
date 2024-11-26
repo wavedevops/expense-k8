@@ -97,7 +97,6 @@ apiVersion: apps/v1
 metadata:
   name: frontend
   namespace: expense
-  # these labels are deployment related labels
   labels:
     component: frontend
     project: expense
@@ -109,7 +108,6 @@ spec:
       component: frontend
       project: expense
       tier: web
-  # pod definition
   template:
     metadata:
       labels:
@@ -119,7 +117,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: joindevops/frontend:v1.0
+          image: chandrahari296/frontend:v1.0
           volumeMounts:
             - name: nginx-conf
               mountPath: /etc/nginx/nginx.conf
@@ -147,5 +145,5 @@ spec:
     tier: web
   ports:
     - protocol: TCP
-      port: 80 #service-port
+      port: 8080 #service-port
       targetPort: 8080 #target-port

@@ -11,7 +11,7 @@ kubectl get svc
 kubectl describe service frontend
 
 kubectl port-forward pod/frontend-54d95895f5-4fd9f 8080:8080
-
+kubectl port-forward pod/frontend-54d95895f5-wqtp9 8080:8080
 ```
 ➜  frontend git:(main) ✗ kubectl get svc
 NAME       TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
@@ -49,3 +49,7 @@ Forwarding from 127.0.0.1:8080 -> 8080
 Forwarding from [::1]:8080 -> 8080
 
 ```
+
+chandrahari296/mysql:v1.0
+chandrahari296/backend:v1.0
+chandrahari296/frontend:v2.0

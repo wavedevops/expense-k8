@@ -1,3 +1,4 @@
+# chandrahari296/frontend:v2.0
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -145,5 +146,5 @@ spec:
     tier: web
   ports:
     - protocol: TCP
-      port: 8080 #service-port
+      port: 80 #service-port
       targetPort: 8080 #target-port

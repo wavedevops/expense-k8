@@ -35,7 +35,7 @@ spec:
           envFrom:
             - configMapRef:
                 name: backend
-¸
+
 ---
 apiVersion: v1
 kind: Service

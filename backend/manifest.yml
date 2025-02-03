@@ -4,7 +4,7 @@ metadata:
   name: backend
   namespace: expense
 data:
-  DB_HOST: mysql # mysql component service name
+  DB_HOST: mysql # MySQL component service name
 ---
 kind: Deployment
 apiVersion: apps/v1
@@ -29,6 +29,10 @@ spec:
         project: expense
         tier: app
     spec:
+      initContainers:
+        - name: init-mysql
+          image: busybox
+          command: ['sh', '-c', 'until nc -z mysql 3306; do echo waiting for mysql; sleep 2; done;']
       containers:
         - name: backend
           image: chandrahari296/backend:v1.0
@@ -49,5 +53,5 @@ spec:
     tier: app
   ports:
     - protocol: TCP
-      port: 8080 #service-port
-      targetPort: 8080 #target-port
+      port: 8080 # service port
+      targetPort: 8080 # target port

@@ -53,3 +53,21 @@ Forwarding from [::1]:8080 -> 8080
 chandrahari296/mysql:v1.0
 chandrahari296/backend:v1.0 
 chandrahari296/frontend:v2.0
+
+---
+
+
+```sh
+for dir in */; do [ -f "$dir/manifest.yml" ] && echo "Deleting $dir/manifest.yml..." && kubectl delete -f "$dir/manifest.yml"; done
+```
+
+```sh 
+for dir in */; do
+    if [ -f "$dir/manifest.yml" ]; then
+        echo "Deleting resources in $dir/manifest.yml..."
+        kubectl delete -f "$dir/manifest.yml"
+    else
+        echo "No manifest.yml found in $dir"
+    fi
+done
+```

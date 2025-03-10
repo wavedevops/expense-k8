@@ -1,3 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: prasad
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -15,11 +20,12 @@ spec:
       labels:
         app: nginx
     spec:
+      restartPolicy: Always
       containers:
         - name: nginx
-          image: chandrahari296/frontend:v2.0.0 #nginx:1.14.2
+          image: chandrahari296/frontend:v3.0.0  # Ensure this image exists in your DockerHub repo
           ports:
-            - containerPort: 81
+            - containerPort: 80
 ---
 apiVersion: v1
 kind: Service
@@ -32,18 +38,19 @@ spec:
   ports:
     - name: http
       protocol: TCP
-      port: 80 # service listen  port
-      targetPort: 81 # pod port
-
+      port: 80  # Service listens on this port
+      targetPort: 80  # Pod port
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   namespace: prasad
   name: nginx-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"  # Ensures it is picked up by the NGINX Ingress Controller
 spec:
   rules:
-    - host: "app.chaitu.org"
+    - host: "nginx.chaitu.org"  # Ensure DNS is correctly configured
       http:
         paths:
           - pathType: Prefix

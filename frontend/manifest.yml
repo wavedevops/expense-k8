@@ -95,7 +95,7 @@ data:
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: frontend
+  name:
   namespace: expense
   labels:
     component: frontend
@@ -118,13 +118,6 @@ spec:
       containers:
         - name: frontend
           image: chandrahari296/frontend:v2.0
-          resources:
-            limits:
-              cpu: 100m
-              memory: 120Mi
-            requests:
-              cpu: 150m
-              memory: 260Mi
           volumeMounts:
             - name: nginx-conf
               mountPath: /etc/nginx/nginx.conf
@@ -172,23 +165,3 @@ spec:
                 name: frontend
                 port:
                   number: 80
----
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: frontend
-  namespace: expense
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: frontend
-  minReplicas: 1
-  maxReplicas: 10
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 50
